@@ -11,10 +11,8 @@ const app = express();
 // Middlewares
 app.use(express.json());
 
-// Public Routes
+//  Routes
 app.use("/api/auth", require("./routes/authRoute"));
-
-// Private Routes
 app.use("/api/users", require("./routes/usersRoute"));
 
 // Running The Server
