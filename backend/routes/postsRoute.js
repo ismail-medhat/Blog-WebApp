@@ -4,17 +4,17 @@ const {
   getSinglePostCtrl,
   getPostsCountCtrl,
   deletePostCtrl,
+  updatePostCtrl,
+  updatePostImageCtrl,
+  toggleLikePostCtrl,
 } = require("../controllers/postsController");
 const uploadPhoto = require("../middlewares/photoUpload");
 const validateObjectId = require("../middlewares/validateObjectId");
-const {
-  verifyToken,
-  verifyTokenAndAdmin,
-} = require("../middlewares/verifyToken");
+const { verifyToken } = require("../middlewares/verifyToken");
 
 const router = require("express").Router();
 
-// create new post : api/posts
+// api/posts
 router
   .route("/")
   .post(verifyToken, uploadPhoto.single("image"), createPostCtrl)
@@ -23,10 +23,26 @@ router
 // get posts count route : api/posts/count
 router.route("/count").get(getPostsCountCtrl);
 
-// get single post : api/posts/:id
+// api/posts/:id
 router
   .route("/:id")
   .get(validateObjectId, getSinglePostCtrl)
-  .delete(validateObjectId, verifyToken, deletePostCtrl);
+  .delete(validateObjectId, verifyToken, deletePostCtrl)
+  .put(validateObjectId, verifyToken, updatePostCtrl);
+
+// api/posts/upload-image/:id
+router
+  .route("/upload-image/:id")
+  .put(
+    validateObjectId,
+    verifyToken,
+    uploadPhoto.single("image"),
+    updatePostImageCtrl
+  );
+
+// api/posts/like/:id
+router
+  .route("/like/:id")
+  .put(validateObjectId, verifyToken, toggleLikePostCtrl);
 
 module.exports = router;

@@ -16,7 +16,7 @@ const {
  -----------------------------------------------------------------*/
 module.exports.getAllUsersCtrl = asyncHandler(async (req, res) => {
   //TODO: 1. fetch all users from DB
-  const users = await User.find().select("-password");
+  const users = await User.find().select("-password").populate("posts");
 
   //TODO: 2. send a response to client
   res.status(200).json(users);
@@ -30,7 +30,9 @@ module.exports.getAllUsersCtrl = asyncHandler(async (req, res) => {
  -----------------------------------------------------------------*/
 module.exports.getUserProfileCtrl = asyncHandler(async (req, res) => {
   //TODO: 1. get user profile data from DB
-  const user = await User.findById(req.params.id).select("-password");
+  const user = await User.findById(req.params.id)
+    .select("-password")
+    .populate("posts");
   if (!user) {
     return res.status(404).json({ message: "user not found" });
   }
