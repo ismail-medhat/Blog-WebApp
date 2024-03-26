@@ -1,5 +1,6 @@
 const express = require("express");
 const connectToDb = require("./config/connectToDb");
+const { errorHandler, notFoundHandler } = require("./middlewares/error");
 require("dotenv").config();
 
 // Connection To DB
@@ -16,6 +17,11 @@ app.use("/api/auth", require("./routes/authRoute"));
 app.use("/api/users", require("./routes/usersRoute"));
 app.use("/api/posts", require("./routes/postsRoute"));
 app.use("/api/comments", require("./routes/commentsRoute"));
+app.use("/api/categories", require("./routes/categoriesRoute"));
+
+// Error handler Middleware
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 // Running The Server
 const PORT = process.env.PORT || 8000;
