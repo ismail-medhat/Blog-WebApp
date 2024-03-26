@@ -6,6 +6,7 @@ const {
   validateCreatePost,
   validateUpdatePost,
 } = require("../models/Post");
+const { Comment } = require("../models/Comment");
 const {
   cloudinaryUploadImage,
   cloudinaryRemoveImage,
@@ -86,9 +87,9 @@ module.exports.getAllPostsCtrl = asyncHandler(async (req, res) => {
  -----------------------------------------------------------------*/
 module.exports.getSinglePostCtrl = asyncHandler(async (req, res) => {
   //TODO: 1. fetch post details depend on post id
-  const post = await Post.findById(req.params.id).populate("user", [
-    "-password",
-  ]);
+  const post = await Post.findById(req.params.id)
+    .populate("user", ["-password"])
+    .populate("comments");
   if (!post) {
     return res.status(404).json({ message: "post not found" });
   }
@@ -126,7 +127,8 @@ module.exports.deletePostCtrl = asyncHandler(async (req, res) => {
   if (req.user.isAdmin || req.user.id === post.user.toString()) {
     await Post.findByIdAndDelete(req.params.id);
     await cloudinaryRemoveImage(post.image.publicId);
-    //@TODO: delete comments that belong to this post
+    //TODO: delete comments that belong to this post
+    await Comment.deleteMany({ postId: post._id });
   } else {
     return res.status(403).json({ message: "access denied, forbidden" });
   }
