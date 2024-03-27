@@ -1,11 +1,12 @@
+import { Link } from "react-router-dom";
 import "./header.css";
 const HeaderLeft = ({ toggle, setToggle }) => {
   return (
     <div className="header-left">
-      <div className="header-logo">
+      <Link to={"/"} className="header-logo">
         <strong>BLOG</strong>
         <i className="bi bi-pencil"></i>
-      </div>
+      </Link>
       <div onClick={() => setToggle((prev) => !prev)} className="header-menu">
         {toggle ? (
           <i className="bi bi-x-lg"></i>
